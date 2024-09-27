@@ -56,16 +56,20 @@ const cards = [
   ];
   
 
-let myButton = document.querySelector("button");
+let myButton = document.getElementById("playButton");
+let infoButton = document.getElementById("infoButton");
 let startingDeck = cards;
 let discardPile = [];
 let intervalId;
+let showModal = true;
+let modal = document.getElementById("body");
 
 myButton.onclick = function() {
     myButton.disabled = true;
     myButton.innerHTML = "Pause";
-    intervalId = setInterval(pullCard, 100);
+    intervalId = setInterval(pullCard, 2000);
 }
+
 
 function pullCard () {
     if (startingDeck.length === 0) {
@@ -88,6 +92,7 @@ function pullCard () {
     discardPile.push(currentCard);
     renderDiscardPile();
     document.getElementById("currentCard").src = "/assets/" + currentCard.image;
+    readCard(currentCard.name);
 }
 
 function renderDiscardPile () {
@@ -95,6 +100,7 @@ function renderDiscardPile () {
     historyContainer.innerHTML = "";
 
     discardPile
+        .filter((pastCard) => pastCard !== currentCard)
         .reverse()
         .forEach((pastCard) => {
             const pastImg = document.createElement("img");
@@ -108,4 +114,11 @@ function renderDiscardPile () {
 
             historyContainer.appendChild(pastImg);
         });
+}
+
+
+function readCard(cardName) {
+    let utterance = new SpeechSynthesisUtterance(cardName);
+    console.log(utterance);
+    speechSynthesis.speak(utterance);
 }
